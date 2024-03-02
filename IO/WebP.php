@@ -1,7 +1,7 @@
 <?php
 
 /*
-  IO_WebP class
+  IO_WebP class - 1.0.0
   (c) 2019/08/22 yoya@awm.jp
   ref) http://pwiki.awm.jp/~yoya/?WebP
   https://developers.google.com/speed/webp/docs/riff_container
@@ -73,8 +73,8 @@ class IO_WebP {
             $chunk["A"] = $bit->getUIBits(1);  // Animation
             $chunk["R"] = $bit->getUIBits(1);  // reserved
             $chunk["Reserved"] = $bit->getUIBits(24);
-            $chunk["image_width"] = $bit->getUI8() + 0x100 * ($bit->getUI8() + 0x100 * $bit->getUI8()) + 1;
-            $chunk["image_height"] = $bit->getUI8() + 0x100 * ($bit->getUI8() + 0x100 * $bit->getUI8()) + 1;
+            $chunk["image_width"] = $bit->getUI24LE();
+            $chunk["image_height"] = $bit->getUI24LE();
             break;
         default:
             $tagSize = $bit->getUI32LE();
