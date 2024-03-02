@@ -36,11 +36,11 @@ class IO_WebP {
     function parseChunk($bit) {
         list($base_offset, $dummy) = $bit->getOffset();
         $ChunkHeader = $bit->getData(4);
-        $chunk = ["Header" => $ChunkHeader];
+        $tagSize = $bit->getUI32LE();
+        $chunk = [ "Header" => $ChunkHeader,
+                   "TagSize" => $tagSize ];
         switch ($ChunkHeader) {
         case "VP8 ":
-            $tagSize = $bit->getUI32LE();
-            $chunk["TagSize"] = $tagSize;
             $tmp = $bit->getUI8() | ($bit->getUI8() << 8) | ($bit->getUI8() << 16);
             $chunk["key_frame"] = $tmp & 0x1;
             $chunk["version"] = ($tmp >> 1) & 0x7;
@@ -55,16 +55,12 @@ class IO_WebP {
             $chunk["vertical_scale"] = $tmp >> 14;
             break;
         case "VP8L": // Lossless
-            $tagSize = $bit->getUI32LE();
-            $chunk["TagSize"] = $tagSize;
             $chunk["image_width"] = $bit->getUIBits(14) + 1;
             $chunk["image_height"] = $bit->getUIBits(14) + 1;
             $chunk["alpha_is_used"] = $bit->getUIBit();
             $chunk["version_number"] = $bit->getUIBits(3);
             break;
         case "VP8X": // Extended
-            $tagSize = $bit->getUI32LE();
-            $chunk["TagSize"] = $tagSize;
             $chunk["Rsv"] = $bit->getUIBits(2);  // reserved
             $chunk["I"] = $bit->getUIBits(1);  // ICC Profild
             $chunk["L"] = $bit->getUIBits(1);  // Alpha plane
@@ -76,9 +72,12 @@ class IO_WebP {
             $chunk["image_width"] = $bit->getUI24LE();
             $chunk["image_height"] = $bit->getUI24LE();
             break;
+        case "ALPH":
+            $chunk["Rsv"] = $bit->getUIBits(2);  // Reserved
+            $chunk["P"] = $bit->getUIBits(2);  // Processing
+            $chunk["F"] = $bit->getUIBits(2);  // Filtering method
+            $chunk["C"] = $bit->getUIBits(2);  // Compression
         default:
-            $tagSize = $bit->getUI32LE();
-            $chunk["TagSize"] = $tagSize;
             break;
         }
         $bit->setOffset($base_offset + $tagSize + 8, 0);
@@ -121,7 +120,11 @@ class IO_WebP {
                  echo " image_height:".$chunk["image_height"];
                  break;
              case "ALPH":
-                 echo "    (alpha data)";
+                 echo "    P(process):".$chunk["P"];
+                 echo " F(filter):".$chunk["F"];
+                 echo " C(compress):".$chunk["C"];
+                 echo PHP_EOL;
+                 echo "    (alpha bitstream)";
                  break;
              }
              echo PHP_EOL;
