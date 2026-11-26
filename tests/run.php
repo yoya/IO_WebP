@@ -75,5 +75,26 @@ check('odd chunk: EXIF', array('Header' => 'EXIF', 'TagSize' => 3), $webp->Chunk
 check('odd chunk: next header', 'VP8 ', $webp->ChunkList[2]['Header']);
 check('odd chunk: next width', 2000, $webp->ChunkList[2]['width']);
 
+/*
+ * VP8L: signature byte, then LSB-first 14-bit width-1, 14-bit height-1, alpha, version
+ */
+function vp8l($sig, $w, $h, $alpha, $version) {
+    $v = ($w - 1) | (($h - 1) << 14) | ($alpha << 28) | ($version << 29);
+    return chr($sig).pack('V', $v)."\0\0\0";
+}
+$c = parseWebP(webp(chunk('VP8L', vp8l(0x2f, 100, 50, 1, 0))))->ChunkList[0];
+check('VP8L signature', 0x2f, $c['signature']);
+check('VP8L image_width', 100, $c['image_width']);
+check('VP8L image_height', 50, $c['image_height']);
+check('VP8L alpha_is_used', 1, $c['alpha_is_used']);
+check('VP8L version_number', 0, $c['version_number']);
+$c = parseWebP(webp(chunk('VP8L', vp8l(0x2f, 16384, 1, 0, 5))))->ChunkList[0];
+check('VP8L max width', 16384, $c['image_width']);
+check('VP8L alpha_is_used 0', 0, $c['alpha_is_used']);
+check('VP8L version_number 5', 5, $c['version_number']);
+ob_start();
+parseWebP(webp(chunk('VP8L', vp8l(0x2f, 640, 480, 0, 0))))->dump(array());
+check('VP8L dump', 1, preg_match('/Header:VP8L TagSize:8\n signature:0x2f image_width:640 image_height:480/', ob_get_clean()));
+
 echo "passed: $passed, failed: $failed".PHP_EOL;
 exit($failed ? 1 : 0);

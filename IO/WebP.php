@@ -55,10 +55,15 @@ class IO_WebP {
             $chunk["vertical_scale"] = $tmp >> 14;
             break;
         case "VP8L": // Lossless
-            $chunk["image_width"] = $bit->getUIBits(14) + 1;
-            $chunk["image_height"] = $bit->getUIBits(14) + 1;
-            $chunk["alpha_is_used"] = $bit->getUIBit();
-            $chunk["version_number"] = $bit->getUIBits(3);
+            $sig = $bit->getUI8();
+            if ($sig != 0x2f) {
+                fprintf(STDERR, "warning: VP8L invalid signature:".$sig.PHP_EOL);
+            }
+            $chunk["signature"] = $sig;
+            $chunk["image_width"] = $bit->getUIBitsLSB(14) + 1;
+            $chunk["image_height"] = $bit->getUIBitsLSB(14) + 1;
+            $chunk["alpha_is_used"] = $bit->getUIBitsLSB(1);
+            $chunk["version_number"] = $bit->getUIBitsLSB(3);
             break;
         case "VP8X": // Extended
             $chunk["Rsv"] = $bit->getUIBits(2);  // reserved
@@ -106,7 +111,8 @@ class IO_WebP {
                  echo " vertical_scale:".$chunk["vertical_scale"];
                  break;
              case "VP8L":
-                 echo "    image_width:".$chunk["image_width"];
+                 echo " signature:0x".dechex($chunk["signature"]);
+                 echo " image_width:".$chunk["image_width"];
                  echo " image_height:".$chunk["image_height"];
                  break;
              case "VP8X":
