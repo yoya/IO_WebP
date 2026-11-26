@@ -1,7 +1,7 @@
 <?php
 
 /*
-  IO_WebP class - 1.0.4
+  IO_WebP class - 2.0.0
   (c) 2019/08/22 yoya@awm.jp
   ref) http://pwiki.awm.jp/~yoya/?WebP
   https://developers.google.com/speed/webp/docs/riff_container
