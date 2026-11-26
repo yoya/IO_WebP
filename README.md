@@ -76,7 +76,7 @@ echo $vp8x['image_width'], 'x', $vp8x['image_height'], ' alpha:', $vp8x['L'], PH
 
 # 既知の制限
 
-- VP8L の `alpha_is_used` と `version_number` は、ビット順の扱いが誤っていて正しい値にならない (dump には出ない)。
+- VP8L のヘッダ (`image_width` `image_height` `alpha_is_used` `version_number`) は、先頭の signature バイトを読み飛ばさず、ビット順の扱いも誤っていて、正しい値にならない。
 - ANMF (アニメーションのフレーム) の中のチャンクには入らない。
 - `webpdump.php` の `-h` は何もしない (`dump()` がオプションを見ていない)。
 

@@ -76,7 +76,7 @@ echo $vp8x['image_width'], 'x', $vp8x['image_height'], ' alpha:', $vp8x['L'], PH
 
 # Known limitations
 
-- `alpha_is_used` and `version_number` of VP8L are read in the wrong bit order and are not correct (they are not shown in the dump).
+- The VP8L header values (`image_width` `image_height` `alpha_is_used` `version_number`) are not correct: the leading signature byte is not skipped and the bits are read in the wrong order.
 - The chunks inside ANMF (animation frames) are not parsed.
 - `-h` of `webpdump.php` does nothing (`dump()` ignores its options).
 
