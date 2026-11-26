@@ -66,5 +66,14 @@ check('VP8X E(exif)', 1, $c['E']);
 check('VP8X image_width', 640, $c['image_width']);
 check('VP8X image_height', 480, $c['image_height']);
 
+/*
+ * RIFF: odd-sized chunk is followed by a pad byte
+ */
+$webp = parseWebP(webp(chunk('VP8X', $vp8x).chunk('EXIF', 'abc').chunk('VP8 ', $vp8)));
+check('odd chunk: count', 3, count($webp->ChunkList));
+check('odd chunk: EXIF', array('Header' => 'EXIF', 'TagSize' => 3), $webp->ChunkList[1]);
+check('odd chunk: next header', 'VP8 ', $webp->ChunkList[2]['Header']);
+check('odd chunk: next width', 2000, $webp->ChunkList[2]['width']);
+
 echo "passed: $passed, failed: $failed".PHP_EOL;
 exit($failed ? 1 : 0);

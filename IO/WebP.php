@@ -80,7 +80,7 @@ class IO_WebP {
         default:
             break;
         }
-        $bit->setOffset($base_offset + $tagSize + 8, 0);
+        $bit->setOffset($base_offset + 8 + $tagSize + ($tagSize & 1), 0);
         return $chunk;
     }
     
