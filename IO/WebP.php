@@ -48,10 +48,10 @@ class IO_WebP {
             $chunk["first_part_size"] = ($tmp >> 5) & 0x7FFFF;
             $start_code = $bit->getData(3);
             $tmp = $bit->getUI16LE();
-            $chunk["width"] = $tmp & 0x3FF;
+            $chunk["width"] = $tmp & 0x3FFF;
             $chunk["horizontal_scale"] = $tmp >> 14;
             $tmp = $bit->getUI16LE();
-            $chunk["height"] = $tmp & 0x3FF;
+            $chunk["height"] = $tmp & 0x3FFF;
             $chunk["vertical_scale"] = $tmp >> 14;
             break;
         case "VP8L": // Lossless
