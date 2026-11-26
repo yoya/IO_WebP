@@ -68,7 +68,7 @@ echo $vp8x['image_width'], 'x', $vp8x['image_height'], ' alpha:', $vp8x['L'], PH
 - `parse()` stores the RIFF header in `FileHeader` (`FourCC`, `Size`, `Signature`) and lists the chunks in `ChunkList`.
   Each chunk has `Header` (FourCC) and `TagSize`, and the following types also have their header values. The chunk payload bytes are not kept.
   - `VP8 `: `key_frame` (the frame type bit as is; 0 is a key frame) `version` `show_frame` `first_part_size` `width` `height` `horizontal_scale` `vertical_scale`
-  - `VP8L`: `image_width` `image_height` `alpha_is_used` `version_number`
+  - `VP8L`: `signature` (0x2f; a warning is printed to STDERR otherwise) `image_width` `image_height` `alpha_is_used` `version_number`
   - `VP8X`: flags `I` (ICC) `L` (alpha) `E` (Exif) `X` (XMP) `A` (animation), and the canvas `image_width` `image_height`
   - `ALPH`: `P` (preprocessing) `F` (filtering) `C` (compression)
 - The 1-byte padding after an odd-sized chunk is skipped.
@@ -76,7 +76,6 @@ echo $vp8x['image_width'], 'x', $vp8x['image_height'], ' alpha:', $vp8x['L'], PH
 
 # Known limitations
 
-- The VP8L header values (`image_width` `image_height` `alpha_is_used` `version_number`) are not correct: the leading signature byte is not skipped and the bits are read in the wrong order.
 - The chunks inside ANMF (animation frames) are not parsed.
 - `-h` of `webpdump.php` does nothing (`dump()` ignores its options).
 

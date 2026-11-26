@@ -68,7 +68,7 @@ echo $vp8x['image_width'], 'x', $vp8x['image_height'], ' alpha:', $vp8x['L'], PH
 - `parse()` は RIFF ヘッダを `FileHeader` (`FourCC`, `Size`, `Signature`) に、各チャンクを `ChunkList` に並べる。
   チャンクは `Header` (FourCC) と `TagSize` を持ち、次の種類はヘッダの値も持つ。チャンクの中身のバイト列は保持しない。
   - `VP8 `: `key_frame` (フレーム種別のビットそのまま。0 がキーフレーム) `version` `show_frame` `first_part_size` `width` `height` `horizontal_scale` `vertical_scale`
-  - `VP8L`: `image_width` `image_height` `alpha_is_used` `version_number`
+  - `VP8L`: `signature` (0x2f。違えば STDERR に警告を出す) `image_width` `image_height` `alpha_is_used` `version_number`
   - `VP8X`: フラグ `I` (ICC) `L` (アルファ) `E` (Exif) `X` (XMP) `A` (アニメーション) と、キャンバスの `image_width` `image_height`
   - `ALPH`: `P` (前処理) `F` (フィルタ) `C` (圧縮)
 - 奇数長のチャンクの後のパディング 1 バイトは読み飛ばす。
@@ -76,7 +76,6 @@ echo $vp8x['image_width'], 'x', $vp8x['image_height'], ' alpha:', $vp8x['L'], PH
 
 # 既知の制限
 
-- VP8L のヘッダ (`image_width` `image_height` `alpha_is_used` `version_number`) は、先頭の signature バイトを読み飛ばさず、ビット順の扱いも誤っていて、正しい値にならない。
 - ANMF (アニメーションのフレーム) の中のチャンクには入らない。
 - `webpdump.php` の `-h` は何もしない (`dump()` がオプションを見ていない)。
 
