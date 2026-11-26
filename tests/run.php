@@ -56,5 +56,15 @@ check('VP8 height', 1500, $c['height']);
 check('VP8 horizontal_scale', 1, $c['horizontal_scale']);
 check('VP8 vertical_scale', 2, $c['vertical_scale']);
 
+/*
+ * VP8X: canvas width / height are stored minus one
+ */
+$vp8x = chr(0x08)."\0\0\0".substr(pack('V', 639), 0, 3).substr(pack('V', 479), 0, 3);
+$webp = parseWebP(webp(chunk('VP8X', $vp8x)));
+$c = $webp->ChunkList[0];
+check('VP8X E(exif)', 1, $c['E']);
+check('VP8X image_width', 640, $c['image_width']);
+check('VP8X image_height', 480, $c['image_height']);
+
 echo "passed: $passed, failed: $failed".PHP_EOL;
 exit($failed ? 1 : 0);

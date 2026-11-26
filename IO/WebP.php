@@ -69,8 +69,8 @@ class IO_WebP {
             $chunk["A"] = $bit->getUIBits(1);  // Animation
             $chunk["R"] = $bit->getUIBits(1);  // reserved
             $chunk["Reserved"] = $bit->getUIBits(24);
-            $chunk["image_width"] = $bit->getUI24LE();
-            $chunk["image_height"] = $bit->getUI24LE();
+            $chunk["image_width"] = $bit->getUI24LE() + 1;
+            $chunk["image_height"] = $bit->getUI24LE() + 1;
             break;
         case "ALPH":
             $chunk["Rsv"] = $bit->getUIBits(2);  // Reserved
