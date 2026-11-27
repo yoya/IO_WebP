@@ -92,3 +92,9 @@ IO_Bit は vendor/ (composer install) か include_path から読み込みます�
 - https://developers.google.com/speed/webp/docs/riff_container
 - https://developers.google.com/speed/webp/docs/webp_lossless_bitstream_specification
 - https://datatracker.ietf.org/doc/html/rfc6386 (VP8)
+
+## IO_Bit の利用箇所
+
+チャンクのサイズはリトルエンディアンで読み取り、VP8L の一部のフィールドには `getUIBitsLSB()` を使います。
+
+[IO_Bit Wiki](https://github.com/yoya/IO_Bit/wiki)
